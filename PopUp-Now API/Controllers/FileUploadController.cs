@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PopUp_Now_API.Interfaces;
+using PopUp_Now_API.Model;
 
-namespace PopUpStore.api.Controllers
+namespace PopUp_Now_API.Controllers
 {
     /**
  * @author Mucalau Cosmin
@@ -39,12 +41,22 @@ namespace PopUpStore.api.Controllers
 
         [Authorize(Roles = "User,Landlord")]
         [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile formFile)
+        public async Task<IActionResult> Upload(FormFileCollection formFiles)
         {
             try
             {
-                var result = await _imagesService.Upload(formFile, User.FindFirst(ClaimTypes.Email)?.Value!);
-                return Created(result.Path, result);
+                var images = new List<Image>();
+                foreach (var formFile in formFiles)
+                {
+                    var result = await _imagesService.Upload(formFile, User.FindFirst(ClaimTypes.Email)?.Value!);
+                    images.Add(result);
+                }
+
+                if (images.Count == 0)
+                {
+                    throw new Exception("No file uploaded");
+                }
+                return Ok(images);
             }
             catch (Exception e)
             {

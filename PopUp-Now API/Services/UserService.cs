@@ -149,7 +149,10 @@ namespace PopUp_Now_API.Services
 
             var result = await _userManager.CreateAsync(identityUser, request.Password);
 
-            await AddToRole(identityUser);
+            if (result.Succeeded)
+            {
+                await AddToRole(identityUser);
+            }
             return result;
         }
 

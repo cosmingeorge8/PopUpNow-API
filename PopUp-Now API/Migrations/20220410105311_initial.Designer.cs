@@ -10,7 +10,7 @@ using PopUp_Now_API.Database;
 namespace PopUp_Now_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220410101022_initial")]
+    [Migration("20220410105311_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

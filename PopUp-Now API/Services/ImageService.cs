@@ -38,7 +38,7 @@ namespace PopUp_Now_API.Services
                 throw new Exception("Invalid file format");
             }
 
-            var path = _environment.WebRootPath + "\\uploads\\";
+            var path = _environment.WebRootPath + Path.DirectorySeparatorChar + "Uploads" + Path.DirectorySeparatorChar;
 
             if (!Directory.Exists(path))
             {
@@ -51,7 +51,7 @@ namespace PopUp_Now_API.Services
             await fileStream.FlushAsync();
             var image = new Image
             {
-                Path = filePath
+                Path = Path.DirectorySeparatorChar + "Uploads" + Path.DirectorySeparatorChar + formFile.FileName
             };
             await _dataContext.Images.AddAsync(image);
             return image;

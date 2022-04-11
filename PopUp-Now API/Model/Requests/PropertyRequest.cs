@@ -17,11 +17,12 @@ namespace PopUp_Now_API.Model.Requests
         [Required] public Category Category { get; set; }
 
         [Required] public int Size { get; set; }
+        
+        [Required] public int MinimumBookingDays { get; set; }
 
         public string Image { get; set; }
 
         public Collection<string> Images { get; set; }
-        public int MinimumBookingDays { get; set; }
 
         public Location GetLocation()
         {
