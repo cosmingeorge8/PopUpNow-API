@@ -32,7 +32,15 @@ namespace PopUp_Now_API.Services
 
         public Task<List<Property>> GetAll()
         {
-            return _dataContext.Properties.ToListAsync();
+            return _dataContext.Properties
+                .Include(property => property.location)
+                .Include(property => property.User)
+                .Include(property => property.Image)
+                .Include(property => property.detailImages)
+                .Include(property => property.Price)
+                .Include(property => property.Category)
+                .Include(property => property.Bookings)
+                .ToListAsync();
         }
 
         public async Task<Property> Get(int id)
@@ -64,19 +72,23 @@ namespace PopUp_Now_API.Services
 
         public async Task<Property> Add(PropertyRequest propertyRequest, string email)
         {
-            var landlord = (Landlord) await _usersService.GetUser(email);
+            var landlord =  await _usersService.GetUser(email);
             var property = new Property
             {
                 Bookings = new Collection<Booking>(),
-                detailImages = new Collection<Image>(),
-                location = propertyRequest.GetLocation(),
+                detailImages = propertyRequest.Images,
+                location = propertyRequest.Location,
                 MinimumBookingDays = propertyRequest.MinimumBookingDays,
                 Name = propertyRequest.Name,
                 Price = propertyRequest.Price,
                 Size = propertyRequest.Size,
+                User = landlord,
+                Category = _dataContext.Categories.FirstOrDefault( cat => cat.Id == propertyRequest.Category.Id),
+                Description = propertyRequest.Description,
+                Image = propertyRequest.Image,
             };
 
-            landlord.AddProperty(property);
+            await _dataContext.Properties.AddAsync(property);
             await _dataContext.SaveChangesAsync();
 
             return property;
@@ -110,6 +122,13 @@ namespace PopUp_Now_API.Services
             return await _dataContext.Properties
                 .Where(property =>
                     property.Category.Id == categoryId)
+                .Include(property => property.location)
+                .Include(property => property.User)
+                .Include(property => property.Image)
+                .Include(property => property.detailImages)
+                .Include(property => property.Price)
+                .Include(property => property.Category)
+                .Include(property => property.Bookings)
                 .ToListAsync();
         }
 

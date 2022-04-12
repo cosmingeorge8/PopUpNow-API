@@ -4,9 +4,11 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using PopUp_Now_API.Database;
 using PopUp_Now_API.Interfaces;
 using PopUp_Now_API.Model;
+using SendGrid;
 using static System.String;
 
 namespace PopUp_Now_API.Services
@@ -15,7 +17,8 @@ namespace PopUp_Now_API.Services
     {
         private static readonly List<string> SupportedContentTypes = new()
         {
-            new string("image/png")
+            new string("image/png"),
+            new string("image/jpeg")
         };
 
         private readonly DataContext _dataContext;
@@ -33,7 +36,14 @@ namespace PopUp_Now_API.Services
 
         public async Task<Image> Upload(IFormFile formFile, string email)
         {
-            if (IsNullOrEmpty(formFile.FileName) || !SupportedContentTypes.Contains(formFile.ContentType))
+            var provider = new FileExtensionContentTypeProvider();
+            
+            if (!provider.TryGetContentType(formFile.FileName, out var contentType))
+            {
+                contentType = formFile.ContentType;
+            }
+            
+            if (IsNullOrEmpty(formFile.FileName) || !SupportedContentTypes.Contains(contentType))
             {
                 throw new Exception("Invalid file format");
             }

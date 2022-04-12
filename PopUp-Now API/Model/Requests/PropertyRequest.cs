@@ -6,36 +6,22 @@ namespace PopUp_Now_API.Model.Requests
     public class PropertyRequest
     {
         public int Id { get; set; }
-        [Required] public string Name { get; set; }
+        [Required(ErrorMessage = "Name is required")] public string Name { get; set; }
 
-        [Required] public string Description { get; set; }
+        [Required(ErrorMessage = "description is required")] public string Description { get; set; }
 
-        [Required] public string Location { get; set; }
+        [Required(ErrorMessage = "Location is required")] public Location Location { get; set; }
 
-        [Required] public Price Price { get; set; }
+        [Required(ErrorMessage = "price is required")] public Price Price { get; set; }
 
-        [Required] public Category Category { get; set; }
+        [Required(ErrorMessage = "category is required")] public Category Category { get; set; }
 
-        [Required] public int Size { get; set; }
+        [Required(ErrorMessage = "size is required")] public int Size { get; set; }
         
-        [Required] public int MinimumBookingDays { get; set; }
+        [Required(ErrorMessage = "minimumBookingDays is required")] public int MinimumBookingDays { get; set; }
 
-        public string Image { get; set; }
+        public Image Image { get; set; }
 
-        public Collection<string> Images { get; set; }
-
-        public Location GetLocation()
-        {
-            var tokens = Location.Split(" ");
-
-            return new Location
-            {
-                City = tokens[0],
-                Country = tokens[1],
-                Number = tokens[2],
-                Postal = tokens[3],
-                Street = tokens[4]
-            };
-        }
+        public Collection<Image> Images { get; set; }
     }
 }

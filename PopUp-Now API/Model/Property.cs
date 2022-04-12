@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
 using PopUp_Now_API.Model.Requests;
 
 namespace PopUp_Now_API.Model
@@ -27,6 +28,7 @@ namespace PopUp_Now_API.Model
         public Category Category { get; set; }
 
         public int Size { get; set; }
+        public IdentityUser User { get; set; }
 
 
         public bool IsBooked(DateTime startDate, DateTime endDate)

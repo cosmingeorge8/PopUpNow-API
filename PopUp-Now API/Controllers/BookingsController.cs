@@ -65,15 +65,13 @@ public class BookingsController : ControllerBase
     }
 
     [Authorize(Roles = "Landlord")]
-    [Authorize]
     [HttpGet("{propertyId:int}")]
     public async Task<IActionResult> GetBookings(int propertyId)
     {
         try
         {
-            var landlord = (Landlord) await _userService.GetUser(User.FindFirst(ClaimTypes.Email)?.Value!);
-            var bookings = landlord.Properties;
-            return Ok(bookings);
+            var landlord = await _userService.GetUser(User.FindFirst(ClaimTypes.Email)?.Value!);
+            return Ok();
         }
         catch (Exception e)
         {

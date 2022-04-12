@@ -75,7 +75,7 @@ namespace PopUp_Now_API
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager, DataContext dataContext)
         {
             if (env.IsDevelopment())
             {
@@ -92,7 +92,7 @@ namespace PopUp_Now_API
             app.UseAuthentication();
             app.UseAuthorization();
 
-            SeedData.Seed(roleManager, userManager);
+            SeedData.Seed(roleManager, userManager, dataContext);
 
             app.UseEndpoints(endpoints =>
             {

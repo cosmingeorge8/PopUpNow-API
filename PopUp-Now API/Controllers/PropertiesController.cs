@@ -29,7 +29,7 @@ namespace PopUp_Now_API.Controllers
         {
             var properties = await _propertiesService.GetAll();
 
-            return properties.Any() ? Ok(properties) : NotFound();
+            return properties.Count > 0 ? Ok(properties) : NotFound();
         }
 
         [HttpGet("Category/{categoryId}")]
