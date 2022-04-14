@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PopUp_Now_API.Interfaces;
-using PopUp_Now_API.Model;
 using PopUp_Now_API.Model.Requests;
 
 namespace PopUp_Now_API.Controllers
@@ -23,6 +23,25 @@ namespace PopUp_Now_API.Controllers
         {
             _userService = userService;
             _bookingService = bookingService;
+        }
+
+        [Authorize(Roles = "User,Landlord")]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var user = await _userService.GetUser(User.FindFirst(ClaimTypes.Email).Value);
+            var bookings = await _bookingService.GetAll(user);
+            return bookings.Any() ? Ok(bookings) : NotFound();
+        }
+
+        [Route("requests")]
+        [Authorize(Roles = "Landlord")]
+        [HttpGet]
+        public async Task<IActionResult> GetBookingRequests()
+        {
+            var user = await _userService.GetUser(User.FindFirst(ClaimTypes.Email).Value);
+            var bookings = await _bookingService.GetBookingRequests(user);
+            return bookings.Any() ? Ok(bookings) : NotFound();
         }
 
         [Authorize(Roles = "User,Landlord")]

@@ -23,11 +23,6 @@ namespace PopUp_Now_API.Services
             _propertiesService = propertiesService;
         }
 
-        public Task<List<Booking>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task Create(Booking booking)
         {
             await _dataContext.Bookings.AddAsync(booking);
@@ -74,7 +69,7 @@ namespace PopUp_Now_API.Services
                 .Where(booking => booking.Property.Id.Equals(propertyId))
                 .Where(booking =>
                     bookingRequestStartDate >= booking.StartDate && bookingRequestEndDate <= booking.EndDate).ToListAsync();
-            return bookings != null;
+            return bookings.Any();
         }
 
         public async Task<Booking> Get(int bookingId)
@@ -92,6 +87,22 @@ namespace PopUp_Now_API.Services
         {
             var booking = await Get(bookingId);
             booking.Confirmed = true;
+        }
+
+        public Task<List<Booking>> GetAll(IdentityUser user)
+        {
+            return _dataContext.Bookings
+                .Where(booking => booking.User.Id.Equals(user.Id))
+                .Include(booking => booking.Property)
+                .ToListAsync();
+        }
+
+        public Task<List<Booking>> GetBookingRequests(IdentityUser user)
+        {
+            return _dataContext.Bookings
+                .Where(booking => booking.Property.User.Id.Equals(user.Id))
+                .Include(booking => booking.Property)
+                .ToListAsync();
         }
     }
 }
