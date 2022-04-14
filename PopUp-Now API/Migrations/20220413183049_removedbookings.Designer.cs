@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PopUp_Now_API.Database;
 
 namespace PopUp_Now_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220413183049_removedbookings")]
+    partial class removedbookings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -460,7 +462,7 @@ namespace PopUp_Now_API.Migrations
             modelBuilder.Entity("PopUp_Now_API.Model.Booking", b =>
                 {
                     b.HasOne("PopUp_Now_API.Model.Property", "Property")
-                        .WithMany()
+                        .WithMany("Bookings")
                         .HasForeignKey("PropertyId");
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
@@ -529,6 +531,8 @@ namespace PopUp_Now_API.Migrations
 
             modelBuilder.Entity("PopUp_Now_API.Model.Property", b =>
                 {
+                    b.Navigation("Bookings");
+
                     b.Navigation("detailImages");
                 });
 #pragma warning restore 612, 618

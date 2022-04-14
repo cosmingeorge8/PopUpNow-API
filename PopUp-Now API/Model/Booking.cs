@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace PopUp_Now_API.Model
 {
@@ -6,7 +7,7 @@ namespace PopUp_Now_API.Model
     {
         public int Id { get; set; }
 
-        public User User { get; set; }
+        public IdentityUser User { get; set; }
 
         public Property Property { get; set; }
 

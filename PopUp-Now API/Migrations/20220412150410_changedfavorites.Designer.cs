@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PopUp_Now_API.Database;
 
 namespace PopUp_Now_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220412150410_changedfavorites")]
+    partial class changedfavorites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,6 +84,10 @@ namespace PopUp_Now_API.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -133,6 +139,8 @@ namespace PopUp_Now_API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -286,11 +294,16 @@ namespace PopUp_Now_API.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PropertyId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Favorites");
                 });
@@ -406,6 +419,16 @@ namespace PopUp_Now_API.Migrations
                     b.ToTable("Properties");
                 });
 
+            modelBuilder.Entity("PopUp_Now_API.Model.User", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -460,10 +483,10 @@ namespace PopUp_Now_API.Migrations
             modelBuilder.Entity("PopUp_Now_API.Model.Booking", b =>
                 {
                     b.HasOne("PopUp_Now_API.Model.Property", "Property")
-                        .WithMany()
+                        .WithMany("Bookings")
                         .HasForeignKey("PropertyId");
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                    b.HasOne("PopUp_Now_API.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
@@ -481,6 +504,10 @@ namespace PopUp_Now_API.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.HasOne("PopUp_Now_API.Model.User", null)
+                        .WithMany("Favorites")
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("Property");
 
@@ -529,7 +556,14 @@ namespace PopUp_Now_API.Migrations
 
             modelBuilder.Entity("PopUp_Now_API.Model.Property", b =>
                 {
+                    b.Navigation("Bookings");
+
                     b.Navigation("detailImages");
+                });
+
+            modelBuilder.Entity("PopUp_Now_API.Model.User", b =>
+                {
+                    b.Navigation("Favorites");
                 });
 #pragma warning restore 612, 618
         }

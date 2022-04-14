@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PopUp_Now_API.Database;
 using PopUp_Now_API.Exceptions;
 using PopUp_Now_API.Interfaces;
@@ -25,13 +28,13 @@ namespace PopUp_Now_API.Services
             throw new NotImplementedException();
         }
 
-        public void Create(Booking booking)
+        public async Task Create(Booking booking)
         {
-            booking.Property.AddBooking(booking);
-            _dataContext.SaveChanges();
+            await _dataContext.Bookings.AddAsync(booking);
+            await _dataContext.SaveChangesAsync();
         }
 
-        public async Task<Booking> BookProperty(BookingRequest bookingRequest)
+        public async Task<Booking> BookProperty(IdentityUser user, BookingRequest bookingRequest)
         {
             /* Find the property */
             var property = await _propertiesService.Get(bookingRequest.PropertyId);
@@ -42,7 +45,7 @@ namespace PopUp_Now_API.Services
             }
 
             /* Check if we can book it*/
-            if (property.IsBooked(bookingRequest.StartDate, bookingRequest.EndDate))
+            if (await IsBooked(property.Id, bookingRequest.StartDate, bookingRequest.EndDate))
             {
                 throw new PropertiesException($"Property is booked in: {bookingRequest.StartDate}");
             }
@@ -50,8 +53,7 @@ namespace PopUp_Now_API.Services
             /* If this point is reached, it means we can create a booking */
             var booking = new Booking()
             {
-                //TODO get the user from request
-                User = new User(),
+                User = user,
                 Property = property,
                 StartDate = bookingRequest.StartDate,
                 EndDate = bookingRequest.EndDate,
@@ -60,9 +62,19 @@ namespace PopUp_Now_API.Services
             };
 
             /* Create object in DB */
-            Create(booking);
+            await Create(booking);
 
             return booking;
+        }
+
+        private async Task<bool> IsBooked(int propertyId, DateTime bookingRequestStartDate,
+            DateTime bookingRequestEndDate)
+        {
+            var bookings = await _dataContext.Bookings
+                .Where(booking => booking.Property.Id.Equals(propertyId))
+                .Where(booking =>
+                    bookingRequestStartDate >= booking.StartDate && bookingRequestEndDate <= booking.EndDate).ToListAsync();
+            return bookings != null;
         }
 
         public async Task<Booking> Get(int bookingId)

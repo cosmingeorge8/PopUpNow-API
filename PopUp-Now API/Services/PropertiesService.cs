@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +38,6 @@ namespace PopUp_Now_API.Services
                 .Include(property => property.detailImages)
                 .Include(property => property.Price)
                 .Include(property => property.Category)
-                .Include(property => property.Bookings)
                 .ToListAsync();
         }
 
@@ -48,7 +46,7 @@ namespace PopUp_Now_API.Services
             var property = await _dataContext.Properties.FindAsync(id);
             if (property is null)
             {
-                throw new Exception($"Property with {id} not found");
+                throw new PropertiesException($"Property with {id} not found");
             }
 
             return property;
@@ -72,10 +70,9 @@ namespace PopUp_Now_API.Services
 
         public async Task<Property> Add(PropertyRequest propertyRequest, string email)
         {
-            var landlord =  await _usersService.GetUser(email);
+            var landlord = await _usersService.GetUser(email);
             var property = new Property
             {
-                Bookings = new Collection<Booking>(),
                 detailImages = propertyRequest.Images,
                 location = propertyRequest.Location,
                 MinimumBookingDays = propertyRequest.MinimumBookingDays,
@@ -83,7 +80,7 @@ namespace PopUp_Now_API.Services
                 Price = propertyRequest.Price,
                 Size = propertyRequest.Size,
                 User = landlord,
-                Category = _dataContext.Categories.FirstOrDefault( cat => cat.Id == propertyRequest.Category.Id),
+                Category = _dataContext.Categories.FirstOrDefault(cat => cat.Id == propertyRequest.Category.Id),
                 Description = propertyRequest.Description,
                 Image = propertyRequest.Image,
             };
@@ -128,7 +125,6 @@ namespace PopUp_Now_API.Services
                 .Include(property => property.detailImages)
                 .Include(property => property.Price)
                 .Include(property => property.Category)
-                .Include(property => property.Bookings)
                 .ToListAsync();
         }
 

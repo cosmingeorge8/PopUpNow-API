@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PopUp_Now_API.Database;
 using PopUp_Now_API.Interfaces;
@@ -19,7 +21,9 @@ namespace PopUp_Now_API.Services
 
         public Task<List<Favorite>> GetAll()
         {
-            return _dataContext.Favorites.ToListAsync();
+            return _dataContext.Favorites
+                .Include(favorite => favorite.Property)
+                .ToListAsync();
         }
 
         public async Task<Favorite> Get(int id)
@@ -33,23 +37,39 @@ namespace PopUp_Now_API.Services
             return result;
         }
 
-        public void Delete(int id)
+        public Task<Favorite> Delete(Property property)
         {
-            var favorite = Get(id);
+            throw new NotImplementedException();
+        }
+
+        private async Task<Favorite> Get(IdentityUser user, Property property)
+        {
+            return await _dataContext.Favorites.Where(favorite =>
+                favorite.User.Equals(user) && favorite.Property.Equals(property)).FirstOrDefaultAsync();
+        }
+
+        public async Task<Favorite> Delete(IdentityUser user, Property property)
+        {
+            var favorite = await Get(user, property);
+            if (favorite is null)
+            {
+                throw new Exception("favorite not found");
+            }
+
+            Delete(favorite);
+            return favorite;
+        }
+
+        private void Delete(Favorite favorite)
+        {
             _dataContext.Remove(favorite);
             _dataContext.SaveChangesAsync();
         }
 
-        public void Create(Favorite favorite)
+        public async Task Create(Favorite favorite)
         {
-            var user = favorite.User;
-            if (user.IsAlreadyFavorite(favorite.Property))
-            {
-                throw new Exception("Property already in the favorites list");
-            }
-
-            user.AddFavorite(favorite);
-            _dataContext.SaveChangesAsync();
+            await _dataContext.Favorites.AddAsync(favorite);
+            await _dataContext.SaveChangesAsync();
         }
     }
 }

@@ -32,6 +32,20 @@ namespace PopUp_Now_API.Controllers
             return properties.Count > 0 ? Ok(properties) : NotFound();
         }
 
+        [HttpGet("/id/{propertyId}")]
+        public async Task<IActionResult> Get(int propertyId)
+        {
+            try
+            {
+                var property = await _propertiesService.Get(propertyId);
+                return property != null ? Ok(property) : NotFound(propertyId);
+            }
+            catch (PropertiesException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpGet("Category/{categoryId}")]
         public async Task<IActionResult> GetByCategory(int categoryId)
         {
@@ -105,21 +119,6 @@ namespace PopUp_Now_API.Controllers
             var result = await _propertiesService.Update(propertyRequest);
 
             return result ? Ok("Property updated") : BadRequest();
-        }
-
-        [Authorize(Roles = "Landlord")]
-        [HttpGet("{propertyId}/Bookings")]
-        public IActionResult GetBookings(int propertyId)
-        {
-            try
-            {
-                var result = _propertiesService.Get(propertyId).Result.Bookings;
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                return NotFound(e.Message);
-            }
         }
     }
 }

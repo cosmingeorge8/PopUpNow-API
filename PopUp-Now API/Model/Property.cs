@@ -10,8 +10,6 @@ namespace PopUp_Now_API.Model
     {
         public int Id { get; set; }
 
-        public Collection<Booking> Bookings { get; set; }
-
         public Collection<Image> detailImages { get; set; }
 
         public Image Image { get; set; }
@@ -29,17 +27,6 @@ namespace PopUp_Now_API.Model
 
         public int Size { get; set; }
         public IdentityUser User { get; set; }
-
-
-        public bool IsBooked(DateTime startDate, DateTime endDate)
-        {
-            return Bookings.Any(booking => startDate >= booking.StartDate && endDate <= booking.EndDate);
-        }
-
-        public void AddBooking(Booking booking)
-        {
-            Bookings.Add(booking);
-        }
 
         public string GetURl()
         {
