@@ -19,9 +19,10 @@ namespace PopUp_Now_API.Services
             _dataContext = dataContext;
         }
 
-        public Task<List<Favorite>> GetAll()
+        public Task<List<Favorite>> GetAll(User user)
         {
             return _dataContext.Favorites
+                .Where(favorite => favorite.User.Id.Equals(user.Id))
                 .Include(favorite => favorite.Property)
                 .ToListAsync();
         }
@@ -44,8 +45,10 @@ namespace PopUp_Now_API.Services
 
         private async Task<Favorite> Get(User user, Property property)
         {
-            return await _dataContext.Favorites.Where(favorite =>
-                favorite.User.Equals(user) && favorite.Property.Equals(property)).FirstOrDefaultAsync();
+            return await _dataContext.Favorites
+                .Where(favorite => favorite.User.Id.Equals(user.Id)
+                                   && favorite.Property.Id.Equals(property.Id))
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Favorite> Delete(User user, Property property)

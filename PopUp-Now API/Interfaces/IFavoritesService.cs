@@ -8,7 +8,7 @@ namespace PopUp_Now_API.Interfaces
     public interface IFavoritesService
     {
         Task Create(Favorite favorite);
-        Task<List<Favorite>> GetAll();
+        Task<List<Favorite>> GetAll(User user);
 
         Task<Favorite> Get(int id);
 

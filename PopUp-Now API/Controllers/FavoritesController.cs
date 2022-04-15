@@ -78,7 +78,8 @@ namespace PopUp_Now_API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var favorites = await _favoritesService.GetAll();
+            var user = await _userService.GetUser(User.FindFirst(ClaimTypes.Email).Value);
+            var favorites = await _favoritesService.GetAll(user);
 
             return favorites is null ? NotFound() : Ok(favorites);
         }
