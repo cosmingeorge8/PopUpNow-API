@@ -67,14 +67,14 @@ namespace PopUp_Now_API.Controllers
         }
 
         [Authorize(Roles = "Landlord")]
-        [Authorize]
-        [HttpPost("{bookingId:int}")]
-        public IActionResult ConfirmBooking(int bookingId, BookingStatus status)
+        [HttpPut]
+        public async Task<IActionResult> ConfirmBooking(BookingConfirmationRequest bookingConfirmationRequest)
         {
             try
             {
-                _bookingService.ConfirmBooking(bookingId, status);
-                return Ok(status);
+               await _bookingService.ConfirmBooking(bookingConfirmationRequest.BookingId,
+                    bookingConfirmationRequest.BookingStatus);
+                return Ok(bookingConfirmationRequest.BookingStatus);
             }
             catch (Exception e)
             {

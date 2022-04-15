@@ -10,8 +10,8 @@ using PopUp_Now_API.Database;
 namespace PopUp_Now_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220414181028_movedimagetostring")]
-    partial class movedimagetostring
+    [Migration("20220415111856_addedbookingstatus")]
+    partial class addedbookingstatus
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -159,8 +159,8 @@ namespace PopUp_Now_API.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<bool>("Confirmed")
-                        .HasColumnType("bit");
+                    b.Property<int>("BookingStatus")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");

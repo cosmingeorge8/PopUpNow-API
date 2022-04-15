@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PopUp_Now_API.Migrations
 {
-    public partial class movedimagetostring : Migration
+    public partial class addedbookingstatus : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -211,7 +211,7 @@ namespace PopUp_Now_API.Migrations
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Reasoning = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SpecialRequests = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Confirmed = table.Column<bool>(type: "bit", nullable: false)
+                    BookingStatus = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

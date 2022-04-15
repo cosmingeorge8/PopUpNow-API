@@ -87,6 +87,7 @@ namespace PopUp_Now_API.Services
         {
             var booking = await Get(bookingId);
             booking.BookingStatus = status;
+            await _dataContext.SaveChangesAsync();
         }
 
         public Task<List<Booking>> GetAll(User user)
