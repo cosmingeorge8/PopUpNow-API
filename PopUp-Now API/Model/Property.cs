@@ -26,7 +26,7 @@ namespace PopUp_Now_API.Model
         public Category Category { get; set; }
 
         public int Size { get; set; }
-        public IdentityUser User { get; set; }
+        public User User { get; set; }
 
         public string GetURl()
         {

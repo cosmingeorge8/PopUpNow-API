@@ -42,13 +42,13 @@ namespace PopUp_Now_API.Services
             throw new NotImplementedException();
         }
 
-        private async Task<Favorite> Get(IdentityUser user, Property property)
+        private async Task<Favorite> Get(User user, Property property)
         {
             return await _dataContext.Favorites.Where(favorite =>
                 favorite.User.Equals(user) && favorite.Property.Equals(property)).FirstOrDefaultAsync();
         }
 
-        public async Task<Favorite> Delete(IdentityUser user, Property property)
+        public async Task<Favorite> Delete(User user, Property property)
         {
             var favorite = await Get(user, property);
             if (favorite is null)

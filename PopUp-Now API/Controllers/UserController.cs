@@ -165,5 +165,25 @@ namespace PopUp_Now_API.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        /**
+         * Set profile pic
+         */
+        [Route("ProfilePicture")]
+        [Authorize(Roles = "User,Landlord")]
+        [HttpPatch]
+        public async Task<IActionResult> UpdateProfilePic(Image image)
+        {
+            try
+            {
+                var user = await _userRepository.GetUser(User.FindFirst(ClaimTypes.Email)?.Value);
+                await _userRepository.UpdateProfilePic(user,image);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

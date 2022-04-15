@@ -12,6 +12,6 @@ namespace PopUp_Now_API.Interfaces
 
         Task<Favorite> Get(int id);
 
-        Task<Favorite> Delete(IdentityUser user, Property property);
+        Task<Favorite> Delete(User user, Property property);
     }
 }

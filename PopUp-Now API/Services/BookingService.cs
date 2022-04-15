@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PopUp_Now_API.Database;
 using PopUp_Now_API.Exceptions;
@@ -29,7 +28,7 @@ namespace PopUp_Now_API.Services
             await _dataContext.SaveChangesAsync();
         }
 
-        public async Task<Booking> BookProperty(IdentityUser user, BookingRequest bookingRequest)
+        public async Task<Booking> BookProperty(User user, BookingRequest bookingRequest)
         {
             /* Find the property */
             var property = await _propertiesService.Get(bookingRequest.PropertyId);
@@ -89,7 +88,7 @@ namespace PopUp_Now_API.Services
             booking.Confirmed = true;
         }
 
-        public Task<List<Booking>> GetAll(IdentityUser user)
+        public Task<List<Booking>> GetAll(User user)
         {
             return _dataContext.Bookings
                 .Where(booking => booking.User.Id.Equals(user.Id))
@@ -97,7 +96,7 @@ namespace PopUp_Now_API.Services
                 .ToListAsync();
         }
 
-        public Task<List<Booking>> GetBookingRequests(IdentityUser user)
+        public Task<List<Booking>> GetBookingRequests(User user)
         {
             return _dataContext.Bookings
                 .Where(booking => booking.Property.User.Id.Equals(user.Id))

@@ -18,15 +18,16 @@ namespace PopUp_Now_API.Services
     {
         private readonly IMailService _mailService;
 
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
 
         /**
          * Helper field used for reading  appsettings.json
          */
         private readonly IConfiguration _configuration;
 
+
         public UserService(
-            UserManager<IdentityUser> userManager,
+            UserManager<User> userManager,
             IConfiguration configuration, IMailService mailService)
         {
             _userManager = userManager;
@@ -51,7 +52,7 @@ namespace PopUp_Now_API.Services
         /**
          * Update user
          */
-        public void Update(IdentityUser user)
+        public void Update(User user)
         {
             _userManager.UpdateAsync(user);
         }
@@ -104,6 +105,17 @@ namespace PopUp_Now_API.Services
             return "Password has been reset successfully";
         }
 
+        public async Task UpdateProfilePic(User user, Image image)
+        {
+            if (image.Path is null)
+            {
+                throw new Exception("Image has a null path");
+            }
+
+            user.Image = image.Path;
+            await _userManager.UpdateAsync(user);
+        }
+
         public async Task<IdentityResult> RegisterUserAsync(RegisterRequest request)
         {
             if (request is null)
@@ -145,30 +157,31 @@ namespace PopUp_Now_API.Services
 
         private async Task<IdentityResult> RegisterUser(RegisterRequest request)
         {
-            var identityUser = GetUser(request);
+            var User = GetUser(request);
 
-            var result = await _userManager.CreateAsync(identityUser, request.Password);
+            var result = await _userManager.CreateAsync(User, request.Password);
 
             if (result.Succeeded)
             {
-                await AddToRole(identityUser);
+                await AddToRole(User);
             }
+
             return result;
         }
 
-        private async Task AddToRole(IdentityUser identityUser)
+        private async Task AddToRole(User User)
         {
-            if (identityUser is Landlord)
+            if (User is Landlord)
             {
-                await _userManager.AddToRoleAsync(identityUser, "Landlord");
+                await _userManager.AddToRoleAsync(User, "Landlord");
             }
             else
             {
-                await _userManager.AddToRoleAsync(identityUser, "User");
+                await _userManager.AddToRoleAsync(User, "User");
             }
         }
 
-        protected virtual IdentityUser GetUser(RegisterRequest request)
+        protected virtual User GetUser(RegisterRequest request)
         {
             if (request.LandlordRequest)
             {
@@ -237,7 +250,7 @@ namespace PopUp_Now_API.Services
             return tokenString;
         }
 
-        private async Task<List<Claim>> GetClaims(IdentityUser user)
+        private async Task<List<Claim>> GetClaims(User user)
         {
             var claims = new List<Claim>
             {
@@ -258,7 +271,7 @@ namespace PopUp_Now_API.Services
             return claims;
         }
 
-        public async Task<IdentityUser> GetUser(string email)
+        public async Task<User> GetUser(string email)
         {
             var result = await _userManager.FindByEmailAsync(email);
             if (result is null)

@@ -7,7 +7,7 @@ namespace PopUp_Now_API.Database
 {
     public static class SeedData
     {
-        public static void Seed(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager,
+        public static void Seed(RoleManager<IdentityRole> roleManager, UserManager<User> userManager,
             DataContext dataContext)
         {
             SeedRole(roleManager);
@@ -15,7 +15,7 @@ namespace PopUp_Now_API.Database
             SeedCategories(dataContext);
         }
 
-        private static void SeedUser(UserManager<IdentityUser> userManager)
+        private static void SeedUser(UserManager<User> userManager)
         {
             if (userManager.FindByNameAsync("SuperUser").Result == null)
             {

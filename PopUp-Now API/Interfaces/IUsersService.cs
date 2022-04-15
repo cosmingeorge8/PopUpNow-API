@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using PopUp_Now_API.Model;
 using PopUp_Now_API.Model.Requests;
 
 namespace PopUp_Now_API.Interfaces
@@ -12,12 +13,13 @@ namespace PopUp_Now_API.Interfaces
         Task<IdentityResult> RegisterUserAsync(RegisterRequest request);
 
         Task<string> LoginUserAsync(UserLogin request);
-        Task<IdentityUser> GetUser(string email);
-        void Update(IdentityUser user);
+        Task<User> GetUser(string email);
+        void Update(User user);
 
         Task<string> ForgotPasswordAsync(string email);
 
         Task<string> ResetPasswordAsync(ResetPasswordRequest request);
+        Task UpdateProfilePic(User user, Image image);
     }
 }
 

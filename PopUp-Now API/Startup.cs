@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using PopUp_Now_API.Database;
 using PopUp_Now_API.Interfaces;
+using PopUp_Now_API.Model;
 using PopUp_Now_API.Services;
 
 namespace PopUp_Now_API
@@ -34,7 +35,7 @@ namespace PopUp_Now_API
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             // For Identity
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>()
                 .AddDefaultTokenProviders();
@@ -74,7 +75,7 @@ namespace PopUp_Now_API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<IdentityUser> userManager,
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager, DataContext dataContext)
         {
             if (env.IsDevelopment())

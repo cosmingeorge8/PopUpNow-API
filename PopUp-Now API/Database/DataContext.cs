@@ -5,7 +5,7 @@ using PopUp_Now_API.Model;
 
 namespace PopUp_Now_API.Database
 {
-    public class DataContext : IdentityDbContext<IdentityUser>
+    public class DataContext : IdentityDbContext<User>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -15,6 +15,7 @@ namespace PopUp_Now_API.Database
         {
             base.OnModelCreating(builder);
         }
+        
 
         public DbSet<Property> Properties { get; set; }
         public DbSet<Booking> Bookings { get; set; }
