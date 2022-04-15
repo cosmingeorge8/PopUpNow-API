@@ -43,7 +43,7 @@ namespace PopUp_Now_API.Controllers
                 }
                 else
                 {
-                    favorite = new Favorite()
+                    favorite = new Favorite
                     {
                         Property = property,
                         User = user

@@ -19,7 +19,7 @@ namespace PopUp_Now_API.Model
 
         public string SpecialRequests { get; set; }
 
-        public bool Confirmed { get; set; }
+        public BookingStatus BookingStatus { get; set; }
 
         public string GetURl()
         {

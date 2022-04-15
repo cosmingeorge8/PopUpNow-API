@@ -43,7 +43,10 @@ namespace PopUp_Now_API.Services
 
         public async Task<Property> Get(int id)
         {
-            var property = await _dataContext.Properties.FindAsync(id);
+            var property = await _dataContext.Properties
+                .Include(element => element.User)
+                .Where(element => element.Id.Equals(id))
+                .FirstAsync();
             if (property is null)
             {
                 throw new PropertiesException($"Property with {id} not found");

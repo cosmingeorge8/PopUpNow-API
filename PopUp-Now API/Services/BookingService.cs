@@ -45,14 +45,15 @@ namespace PopUp_Now_API.Services
             }
 
             /* If this point is reached, it means we can create a booking */
-            var booking = new Booking()
+            var booking = new Booking
             {
                 User = user,
                 Property = property,
                 StartDate = bookingRequest.StartDate,
                 EndDate = bookingRequest.EndDate,
                 Reasoning = bookingRequest.Reasoning,
-                SpecialRequests = bookingRequest.SpecialRequests
+                SpecialRequests = bookingRequest.SpecialRequests,
+                BookingStatus = BookingStatus.Pending
             };
 
             /* Create object in DB */
@@ -82,10 +83,10 @@ namespace PopUp_Now_API.Services
             return result;
         }
 
-        public async Task ConfirmBooking(int bookingId)
+        public async Task ConfirmBooking(int bookingId, BookingStatus status)
         {
             var booking = await Get(bookingId);
-            booking.Confirmed = true;
+            booking.BookingStatus = status;
         }
 
         public Task<List<Booking>> GetAll(User user)
@@ -99,8 +100,9 @@ namespace PopUp_Now_API.Services
         public Task<List<Booking>> GetBookingRequests(User user)
         {
             return _dataContext.Bookings
+                .Include(booking => booking.Property.User)
+                .Include(booking => booking.User)
                 .Where(booking => booking.Property.User.Id.Equals(user.Id))
-                .Include(booking => booking.Property)
                 .ToListAsync();
         }
     }

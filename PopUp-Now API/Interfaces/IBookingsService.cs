@@ -9,7 +9,7 @@ namespace PopUp_Now_API.Interfaces
     {
         Task<Booking> BookProperty(User user, BookingRequest bookingRequest);
         Task<Booking> Get(int bookingId);
-        Task ConfirmBooking(int bookingId);
+        Task ConfirmBooking(int bookingId, BookingStatus status);
         Task<List<Booking>> GetAll(User user);
         Task<List<Booking>> GetBookingRequests(User user);
     }

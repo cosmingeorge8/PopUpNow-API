@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PopUp_Now_API.Interfaces;
+using PopUp_Now_API.Model;
 using PopUp_Now_API.Model.Requests;
 
 namespace PopUp_Now_API.Controllers
@@ -68,27 +69,12 @@ namespace PopUp_Now_API.Controllers
         [Authorize(Roles = "Landlord")]
         [Authorize]
         [HttpPost("{bookingId:int}")]
-        public IActionResult ConfirmBooking(int bookingId)
+        public IActionResult ConfirmBooking(int bookingId, BookingStatus status)
         {
             try
             {
-                _bookingService.ConfirmBooking(bookingId);
-                return Ok("Booking was confirmed");
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [Authorize(Roles = "Landlord")]
-        [HttpGet("{propertyId:int}")]
-        public async Task<IActionResult> GetBookings(int propertyId)
-        {
-            try
-            {
-                var landlord = await _userService.GetUser(User.FindFirst(ClaimTypes.Email)?.Value!);
-                return Ok();
+                _bookingService.ConfirmBooking(bookingId, status);
+                return Ok(status);
             }
             catch (Exception e)
             {
