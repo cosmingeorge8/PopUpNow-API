@@ -34,16 +34,9 @@ namespace PopUp_Now_API.Controllers
         public async Task<IActionResult> Get()
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
-            var user = await _userRepository.GetUser(email);
-
-            if (user is null)
-            {
-                return BadRequest("User is not authenticated");
-            }
-
             try
             {
-                user = await _userRepository.GetUser(user.Email);
+                var user = await _userRepository.GetUser(email);
                 return Ok(user);
             }
             catch (Exception e)
@@ -116,10 +109,24 @@ namespace PopUp_Now_API.Controllers
      */
         [Authorize(Roles = "User,Landlord")]
         [HttpPatch("Update")]
-        public IActionResult Update(User user)
+        public async Task<IActionResult> Update(UserUpdateRequest userUpdateRequest)
         {
-            _userRepository.Update(user);
-            return Ok();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values);
+            }
+
+            try
+            {
+                var user = await _userRepository.GetUser(User.FindFirst(ClaimTypes.Email)?.Value);
+
+                await _userRepository.Update(user, userUpdateRequest);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         /**
@@ -177,7 +184,7 @@ namespace PopUp_Now_API.Controllers
             try
             {
                 var user = await _userRepository.GetUser(User.FindFirst(ClaimTypes.Email)?.Value);
-                await _userRepository.UpdateProfilePic(user,image);
+                await _userRepository.UpdateProfilePic(user, image);
                 return Ok();
             }
             catch (Exception e)

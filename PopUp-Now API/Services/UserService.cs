@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using PopUp_Now_API.Interfaces;
 using PopUp_Now_API.Model;
 using PopUp_Now_API.Model.Requests;
+using static System.String;
 
 namespace PopUp_Now_API.Services
 {
@@ -52,9 +53,36 @@ namespace PopUp_Now_API.Services
         /**
          * Update user
          */
-        public void Update(User user)
+        public async Task Update(User user, UserUpdateRequest userUpdateRequest)
         {
-            _userManager.UpdateAsync(user);
+            user.Name = userUpdateRequest.Name;
+            user.Email = userUpdateRequest.Email;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                throw new Exception(ErrorsToString(result));
+            }
+
+            if (!IsNullOrEmpty(userUpdateRequest.Password) && !IsNullOrEmpty(userUpdateRequest.ConfirmPassword))
+            {
+                await ChangePassword(user, userUpdateRequest);
+            }
+        }
+
+        private async Task ChangePassword(User user, UserUpdateRequest userUpdateRequest)
+        {
+            if (userUpdateRequest.ConfirmPassword != userUpdateRequest.Password)
+            {
+                throw new Exception("Passwords do not match");
+            }
+
+            var result =
+                await _userManager.ChangePasswordAsync(user, userUpdateRequest.CurrentPassword, userUpdateRequest.Password);
+            if (!result.Succeeded)
+            {
+                throw new Exception(ErrorsToString(result));
+            }
         }
 
         public async Task<string> ForgotPasswordAsync(string email)

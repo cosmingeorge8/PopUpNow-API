@@ -7,14 +7,13 @@ namespace PopUp_Now_API.Interfaces
 {
     public interface IUsersService
     {
-
         Task Delete(string username);
 
         Task<IdentityResult> RegisterUserAsync(RegisterRequest request);
 
         Task<string> LoginUserAsync(UserLogin request);
         Task<User> GetUser(string email);
-        void Update(User user);
+        Task Update(User user, UserUpdateRequest userUpdateRequest);
 
         Task<string> ForgotPasswordAsync(string email);
 
@@ -22,4 +21,3 @@ namespace PopUp_Now_API.Interfaces
         Task UpdateProfilePic(User user, Image image);
     }
 }
-
