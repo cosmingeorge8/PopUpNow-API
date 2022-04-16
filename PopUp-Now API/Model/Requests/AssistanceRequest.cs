@@ -1,21 +1,21 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PopUp_Now_API.Model.Requests;
-
-public class AssistanceRequest
+namespace PopUp_Now_API.Model.Requests
 {
-    [Required]
-    public string Email { get; set; }
-
-    [Required] public string Message { get; set; }
-
-    public Email GetEmail()
+    public class AssistanceRequest
     {
-        return new Email
+        [Required] public string Email { get; set; }
+
+        [Required] public string Message { get; set; }
+
+        public Email GetEmail()
         {
-            Subject = "Assistance" + Email,
-            Body = Message,
-            ToEmail = "popup@assitance.now"
-        };
+            return new Email
+            {
+                Subject = "Assistance" + Email,
+                Body = Message,
+                ToEmail = "popup@assitance.now"
+            };
+        }
     }
 }

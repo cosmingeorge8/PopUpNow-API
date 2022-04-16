@@ -67,8 +67,9 @@ namespace PopUp_Now_API.Services
         {
             var bookings = await _dataContext.Bookings
                 .Where(booking => booking.Property.Id.Equals(propertyId))
+                .Where(booking => booking.BookingStatus != BookingStatus.Declined)
                 .Where(booking =>
-                    bookingRequestStartDate >= booking.StartDate && bookingRequestEndDate <= booking.EndDate).ToListAsync();
+                    bookingRequestStartDate >= booking.StartDate || bookingRequestEndDate <= booking.EndDate).ToListAsync();
             return bookings.Any();
         }
 
