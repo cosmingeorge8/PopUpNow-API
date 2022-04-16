@@ -55,15 +55,6 @@ namespace PopUp_Now_API.Services
          */
         public async Task Update(User user, UserUpdateRequest userUpdateRequest)
         {
-            user.Name = userUpdateRequest.Name;
-            user.Email = userUpdateRequest.Email;
-
-            var result = await _userManager.UpdateAsync(user);
-            if (!result.Succeeded)
-            {
-                throw new Exception(ErrorsToString(result));
-            }
-
             if (!IsNullOrEmpty(userUpdateRequest.Password) && !IsNullOrEmpty(userUpdateRequest.ConfirmPassword))
             {
                 await ChangePassword(user, userUpdateRequest);
