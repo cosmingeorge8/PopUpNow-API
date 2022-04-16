@@ -17,5 +17,6 @@ namespace PopUp_Now_API.Interfaces
         Task<Property> Add(PropertyRequest propertyRequest, string user);
         Task<bool> Update(PropertyRequest propertyRequest);
         Task<List<Property>> GetByCategory(int categoryId);
+        Task<List<Property>> GetByLandlord(string email);
     }
 }

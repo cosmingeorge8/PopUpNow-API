@@ -131,6 +131,20 @@ namespace PopUp_Now_API.Services
                 .ToListAsync();
         }
 
+        public async Task<List<Property>> GetByLandlord(string email)
+        {
+            var user = await _usersService.GetUser(email);
+            return await _dataContext.Properties
+                .Where(property => property.User.Id.Equals(user.Id))
+                .Include(property => property.location)
+                .Include(property => property.User)
+                .Include(property => property.Image)
+                .Include(property => property.detailImages)
+                .Include(property => property.Price)
+                .Include(property => property.Category)
+                .ToListAsync();
+        }
+
 
         /**
      * If the string is empty, an exception will be thrown

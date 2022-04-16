@@ -113,12 +113,28 @@ namespace PopUp_Now_API.Controllers
         }
 
         [Authorize(Roles = "Landlord")]
-        [HttpGet("{propertyId:int}")]
+        [HttpPatch("{propertyId:int}")]
         public async Task<IActionResult> Update(int propertyId, [FromBody] PropertyRequest propertyRequest)
         {
             var result = await _propertiesService.Update(propertyRequest);
 
             return result ? Ok("Property updated") : BadRequest();
+        }
+
+        [Authorize(Roles = "Landlord")]
+        [HttpGet("Landlord")]
+        public async Task<IActionResult> GetByLandlord()
+        {
+            try
+            {
+                var email = User.FindFirst(ClaimTypes.Email)?.Value!;
+                var result = await _propertiesService.GetByLandlord(email);
+                return result.Any() ? Ok(result) : NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
