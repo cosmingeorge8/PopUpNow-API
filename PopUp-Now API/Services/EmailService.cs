@@ -17,6 +17,9 @@ namespace PopUp_Now_API.Services
             _configuration = configuration;
         }
 
+        /**
+         * Send an email using the SendGRIP API
+         */
         public async Task SendEmailAsync(Email email)
         {
             var apiKey = _configuration["SENDGRIP_API_KEY"];

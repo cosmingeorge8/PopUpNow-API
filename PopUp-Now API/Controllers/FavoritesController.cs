@@ -28,6 +28,9 @@ namespace PopUp_Now_API.Controllers
             _propertiesService = propertiesService;
         }
 
+        /**
+         * Save a property to favorites
+         */
         [Authorize(Roles = "User,Landlord")]
         [HttpPost]
         public async Task<IActionResult> SaveToFavorite(FavoriteRequest favoriteRequest)
@@ -59,6 +62,9 @@ namespace PopUp_Now_API.Controllers
             }
         }
 
+        /**
+         * Get a favorite object by id
+         */
         [Authorize(Roles = "User,Landlord")]
         [HttpGet("{favoriteId}")]
         public async Task<IActionResult> Get(int favoriteId)
@@ -74,6 +80,9 @@ namespace PopUp_Now_API.Controllers
             }
         }
 
+        /**
+         * Get all the favorites for this user
+         */
         [Authorize(Roles = "User,Landlord")]
         [HttpGet]
         public async Task<IActionResult> GetAll()

@@ -5,17 +5,14 @@ using PopUp_Now_API.Model;
 
 namespace PopUp_Now_API.Database
 {
+    /**
+     * DataContext class, ORM class responsible for managing persistent data
+     */
     public class DataContext : IdentityDbContext<User>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-        }
-        
 
         public DbSet<Property> Properties { get; set; }
         public DbSet<Booking> Bookings { get; set; }

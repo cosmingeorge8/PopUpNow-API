@@ -61,6 +61,10 @@ namespace PopUp_Now_API.Services
             }
         }
 
+        /**
+         * Change user password using the UserManager class
+         * first assert that passwords are matching
+         */
         private async Task ChangePassword(User user, UserUpdateRequest userUpdateRequest)
         {
             if (userUpdateRequest.ConfirmPassword != userUpdateRequest.Password)
@@ -69,13 +73,17 @@ namespace PopUp_Now_API.Services
             }
 
             var result =
-                await _userManager.ChangePasswordAsync(user, userUpdateRequest.CurrentPassword, userUpdateRequest.Password);
+                await _userManager.ChangePasswordAsync(user, userUpdateRequest.CurrentPassword,
+                    userUpdateRequest.Password);
             if (!result.Succeeded)
             {
                 throw new Exception(ErrorsToString(result));
             }
         }
 
+        /**
+         * Sends an email using SendGrip API containing an validation token to a given email address
+         */
         public async Task<string> ForgotPasswordAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -101,6 +109,10 @@ namespace PopUp_Now_API.Services
             return "Email was sent to user";
         }
 
+        /**
+         * Resets a user's password
+         * Validation done using the token received via e-mail
+         */
         public async Task<string> ResetPasswordAsync(ResetPasswordRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
@@ -124,6 +136,9 @@ namespace PopUp_Now_API.Services
             return "Password has been reset successfully";
         }
 
+        /**
+         * Update user profile picture path
+         */
         public async Task UpdateProfilePic(User user, Image image)
         {
             if (image.Path is null)
@@ -135,6 +150,9 @@ namespace PopUp_Now_API.Services
             await _userManager.UpdateAsync(user);
         }
 
+        /**
+         * Register user
+         */
         public async Task<IdentityResult> RegisterUserAsync(RegisterRequest request)
         {
             if (request is null)
@@ -163,6 +181,9 @@ namespace PopUp_Now_API.Services
             return result;
         }
 
+        /**
+         * Helper method that takes an identity result and pretty formats the errors into string
+         */
         private static string ErrorsToString(IdentityResult result)
         {
             var errorsToString = "";
@@ -174,6 +195,9 @@ namespace PopUp_Now_API.Services
             return errorsToString;
         }
 
+        /**
+         * Register user and add to specific role
+         */
         private async Task<IdentityResult> RegisterUser(RegisterRequest request)
         {
             var User = GetUser(request);
@@ -188,6 +212,9 @@ namespace PopUp_Now_API.Services
             return result;
         }
 
+        /**
+         * Add a given user to role
+         */
         private async Task AddToRole(User User)
         {
             if (User is Landlord)
@@ -200,6 +227,9 @@ namespace PopUp_Now_API.Services
             }
         }
 
+        /**
+         * Determines whether the current user should be a regular user or a Landlord
+         */
         protected virtual User GetUser(RegisterRequest request)
         {
             if (request.LandlordRequest)
@@ -221,6 +251,10 @@ namespace PopUp_Now_API.Services
             };
         }
 
+        /*
+         * Login user
+         * take in a UserLogin request and return a JWT 
+         */
         public async Task<string> LoginUserAsync(UserLogin request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
@@ -269,6 +303,9 @@ namespace PopUp_Now_API.Services
             return tokenString;
         }
 
+        /**
+         * Initialize user claims
+         */
         private async Task<List<Claim>> GetClaims(User user)
         {
             var claims = new List<Claim>
@@ -290,6 +327,9 @@ namespace PopUp_Now_API.Services
             return claims;
         }
 
+        /**
+         * Get user by email
+         */
         public async Task<User> GetUser(string email)
         {
             var result = await _userManager.FindByEmailAsync(email);

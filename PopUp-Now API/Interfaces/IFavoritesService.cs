@@ -9,9 +9,7 @@ namespace PopUp_Now_API.Interfaces
     {
         Task Create(Favorite favorite);
         Task<List<Favorite>> GetAll(User user);
-
         Task<Favorite> Get(int id);
-
         Task<Favorite> Delete(User user, Property property);
     }
 }

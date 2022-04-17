@@ -8,9 +8,6 @@ namespace PopUp_Now_API.Interfaces
     public interface IPropertiesService
     {
         Task<List<Property>> GetAll(string query);
-
-        Task<List<Property>> GetAll(User user);
-
         Task<List<Property>> GetAll();
         Task<Property> Get(int propertyId);
         Task<Property> Delete(int propertyId);

@@ -34,6 +34,9 @@ namespace PopUp_Now_API.Services
             _userService = userService;
         }
 
+        /**
+         * Upload an image
+         */
         public async Task<Image> Upload(IFormFile formFile, string email)
         {
             var provider = new FileExtensionContentTypeProvider();
@@ -67,6 +70,9 @@ namespace PopUp_Now_API.Services
             return image;
         }
 
+        /**
+         * Get an image object by id
+         */
         public async Task<Image> Get(int imageId)
         {
             var result = await _dataContext.Images.FindAsync(imageId);

@@ -16,6 +16,9 @@ namespace PopUp_Now_API.Services
             _dataContext = dataContext;
         }
 
+        /**
+         * Get all categories
+         */
         public async Task<List<Category>> Get()
         {
             return await _dataContext.Categories.ToListAsync();

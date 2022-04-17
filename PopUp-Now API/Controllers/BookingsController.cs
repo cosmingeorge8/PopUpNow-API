@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PopUp_Now_API.Interfaces;
-using PopUp_Now_API.Model;
 using PopUp_Now_API.Model.Requests;
 
 namespace PopUp_Now_API.Controllers
@@ -26,6 +25,9 @@ namespace PopUp_Now_API.Controllers
             _bookingService = bookingService;
         }
 
+        /**
+         * Get the list of bookings for a logged in user
+         */
         [Authorize(Roles = "User,Landlord")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -35,6 +37,10 @@ namespace PopUp_Now_API.Controllers
             return bookings.Any() ? Ok(bookings) : NotFound();
         }
 
+        /**
+         * Get a list of all booking requests for a landlord
+         * Method is accessible for Landlords only
+         */
         [Route("requests")]
         [Authorize(Roles = "Landlord")]
         [HttpGet]
@@ -45,6 +51,10 @@ namespace PopUp_Now_API.Controllers
             return bookings.Any() ? Ok(bookings) : NotFound();
         }
 
+        /**
+         * Book a property
+         * Method takes in a bookingRequests which is processed in the booking service
+         */
         [Authorize(Roles = "User,Landlord")]
         [HttpPost]
         public async Task<IActionResult> BookProperty(BookingRequest bookingRequest)
@@ -66,13 +76,16 @@ namespace PopUp_Now_API.Controllers
             }
         }
 
+        /**
+         * Confirm or decline a booking as a landlord
+         */
         [Authorize(Roles = "Landlord")]
         [HttpPut]
         public async Task<IActionResult> ConfirmBooking(BookingConfirmationRequest bookingConfirmationRequest)
         {
             try
             {
-               await _bookingService.ConfirmBooking(bookingConfirmationRequest.BookingId,
+                await _bookingService.ConfirmBooking(bookingConfirmationRequest.BookingId,
                     bookingConfirmationRequest.BookingStatus);
                 return Ok(bookingConfirmationRequest.BookingStatus);
             }

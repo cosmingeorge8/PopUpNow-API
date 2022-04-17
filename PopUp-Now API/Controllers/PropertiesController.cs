@@ -24,6 +24,9 @@ namespace PopUp_Now_API.Controllers
             _propertiesService = propertiesService;
         }
 
+        /**
+         * Get a list of all properties
+         */
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -32,6 +35,9 @@ namespace PopUp_Now_API.Controllers
             return properties.Count > 0 ? Ok(properties) : NotFound();
         }
 
+        /**
+         * Get a property by id
+         */
         [HttpGet("/id/{propertyId}")]
         public async Task<IActionResult> Get(int propertyId)
         {
@@ -46,6 +52,9 @@ namespace PopUp_Now_API.Controllers
             }
         }
 
+        /**
+         * Get all properties by category
+         */
         [HttpGet("Category/{categoryId}")]
         public async Task<IActionResult> GetByCategory(int categoryId)
         {
@@ -61,6 +70,9 @@ namespace PopUp_Now_API.Controllers
         }
 
 
+        /**
+         * Performs a search on all the properties with the given query
+         */
         [Authorize]
         [HttpGet("{query}")]
         public async Task<IActionResult> GetSearch(string query)
@@ -76,6 +88,9 @@ namespace PopUp_Now_API.Controllers
             }
         }
 
+        /**
+         * Delete a property
+         */
         [Authorize(Roles = "Landlord")]
         [HttpDelete]
         public async Task<IActionResult> Delete(int propertyId)
@@ -91,6 +106,11 @@ namespace PopUp_Now_API.Controllers
             }
         }
 
+        /**
+         * Add a property
+         * Landlord specific action
+         * Takes in a propertyRequest 
+         */
         [Authorize(Roles = "Landlord")]
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] PropertyRequest propertyRequest)
@@ -112,6 +132,9 @@ namespace PopUp_Now_API.Controllers
             }
         }
 
+        /**
+         * Update a property
+         */
         [Authorize(Roles = "Landlord")]
         [HttpPatch("{propertyId:int}")]
         public async Task<IActionResult> Update(int propertyId, [FromBody] PropertyRequest propertyRequest)
@@ -121,6 +144,9 @@ namespace PopUp_Now_API.Controllers
             return result ? Ok("Property updated") : BadRequest();
         }
 
+        /**
+         * Get a list of all properties of a landlord
+         */
         [Authorize(Roles = "Landlord")]
         [HttpGet("Landlord")]
         public async Task<IActionResult> GetByLandlord()

@@ -24,11 +24,9 @@ namespace PopUp_Now_API.Services
             _usersService = usersService;
         }
 
-        public Task<List<Property>> GetAll(User user)
-        {
-            throw new NotImplementedException();
-        }
-
+        /**
+         * Get a list of all properties
+         */
         public Task<List<Property>> GetAll()
         {
             return _dataContext.Properties
@@ -55,11 +53,9 @@ namespace PopUp_Now_API.Services
             return property;
         }
 
-        public void Delete(Property obj)
-        {
-            throw new NotImplementedException();
-        }
-
+        /**
+         * Delete a property by id
+         */
         public async Task<Property> Delete(int id)
         {
             var property = await Get(id);
@@ -70,7 +66,10 @@ namespace PopUp_Now_API.Services
 
             return _dataContext.Properties.Remove(property).Entity;
         }
-
+        
+        /**
+         * Add a new property
+         */
         public async Task<Property> Add(PropertyRequest propertyRequest, string email)
         {
             var landlord = await _usersService.GetUser(email);
@@ -94,6 +93,9 @@ namespace PopUp_Now_API.Services
             return property;
         }
 
+        /**
+         * Update a property
+         */
         public async Task<bool> Update(PropertyRequest propertyRequest)
         {
             var property = await Get(propertyRequest.Id);
@@ -110,6 +112,9 @@ namespace PopUp_Now_API.Services
             return true;
         }
 
+        /**
+         * Get a list of all properties by category
+         */
         public async Task<List<Property>> GetByCategory(int categoryId)
         {
             var category = await _dataContext.Categories.FindAsync(categoryId);

@@ -14,7 +14,7 @@ namespace PopUp_Now_API.Model.Requests
             {
                 Subject = "Assistance" + Email,
                 Body = Message,
-                ToEmail = "popup@assitance.now"
+                ToEmail = "popup@assistance.now"
             };
         }
     }

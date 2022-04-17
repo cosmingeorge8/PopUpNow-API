@@ -22,12 +22,18 @@ namespace PopUp_Now_API.Services
             _propertiesService = propertiesService;
         }
 
+        /**
+         * Create a booking
+         */
         public async Task Create(Booking booking)
         {
             await _dataContext.Bookings.AddAsync(booking);
             await _dataContext.SaveChangesAsync();
         }
 
+        /**
+         * Book a property
+         */
         public async Task<Booking> BookProperty(User user, BookingRequest bookingRequest)
         {
             /* Find the property */
@@ -62,6 +68,9 @@ namespace PopUp_Now_API.Services
             return booking;
         }
 
+        /**
+         * Check if a property is booked on given dates
+         */
         private async Task<bool> IsBooked(int propertyId, DateTime bookingRequestStartDate,
             DateTime bookingRequestEndDate)
         {
@@ -75,6 +84,9 @@ namespace PopUp_Now_API.Services
             return bookings.Any();
         }
 
+        /**
+         * Get a booking by id
+         */
         public async Task<Booking> Get(int bookingId)
         {
             var result = await _dataContext.Bookings.FindAsync(bookingId);
@@ -86,6 +98,9 @@ namespace PopUp_Now_API.Services
             return result;
         }
 
+        /**
+         * Confirm a booking
+         */
         public async Task ConfirmBooking(int bookingId, BookingStatus status)
         {
             var booking = await Get(bookingId);
@@ -93,6 +108,9 @@ namespace PopUp_Now_API.Services
             await _dataContext.SaveChangesAsync();
         }
 
+        /**
+         * Get all the bookings for a give user
+         */
         public Task<List<Booking>> GetAll(User user)
         {
             return _dataContext.Bookings
@@ -101,6 +119,9 @@ namespace PopUp_Now_API.Services
                 .ToListAsync();
         }
 
+        /**
+         * Get all the bookings for a landlord
+         */
         public Task<List<Booking>> GetBookingRequests(User user)
         {
             return _dataContext.Bookings

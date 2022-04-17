@@ -19,6 +19,9 @@ namespace PopUp_Now_API.Services
             _dataContext = dataContext;
         }
 
+        /**
+         * Get a list of favorite objects for a specific user
+         */
         public Task<List<Favorite>> GetAll(User user)
         {
             return _dataContext.Favorites
@@ -27,6 +30,9 @@ namespace PopUp_Now_API.Services
                 .ToListAsync();
         }
 
+        /**
+         * Get favorite object by id
+         */
         public async Task<Favorite> Get(int id)
         {
             var result = await _dataContext.Favorites.FindAsync(id);
@@ -38,11 +44,9 @@ namespace PopUp_Now_API.Services
             return result;
         }
 
-        public Task<Favorite> Delete(Property property)
-        {
-            throw new NotImplementedException();
-        }
-
+        /**
+         * Get the favorite object by user and property
+         */
         private async Task<Favorite> Get(User user, Property property)
         {
             return await _dataContext.Favorites
@@ -51,6 +55,9 @@ namespace PopUp_Now_API.Services
                 .FirstOrDefaultAsync();
         }
 
+        /**
+         * Delete a favorite object
+         */
         public async Task<Favorite> Delete(User user, Property property)
         {
             var favorite = await Get(user, property);
@@ -63,12 +70,18 @@ namespace PopUp_Now_API.Services
             return favorite;
         }
 
+        /**
+         * Delete a favorite object
+         */
         private void Delete(Favorite favorite)
         {
             _dataContext.Remove(favorite);
             _dataContext.SaveChangesAsync();
         }
 
+        /**
+         * Create a favorite object
+         */
         public async Task Create(Favorite favorite)
         {
             await _dataContext.Favorites.AddAsync(favorite);

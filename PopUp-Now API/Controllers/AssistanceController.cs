@@ -20,6 +20,10 @@ namespace PopUp_Now_API.Controllers
             _mailService = mailService;
         }
 
+        /**
+         * Method takes in an assistance request and composes an email that will be sent to the server administrator
+         * A 400 error will be shown if 
+         */
         [HttpPost]
         public async Task<IActionResult> GetAssistance(AssistanceRequest assistanceRequest)
         {

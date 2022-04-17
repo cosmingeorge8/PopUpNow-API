@@ -25,6 +25,10 @@ namespace PopUp_Now_API.Controllers
             _imagesService = imagesService;
         }
 
+        /**
+         * Get the image object by the imageId
+         * Usefull for getting the imagePath
+         */
         [Authorize(Roles = "User,Landlord")]
         [HttpGet("{imageId}")]
         public async Task<IActionResult> Get(int imageId)
@@ -39,6 +43,10 @@ namespace PopUp_Now_API.Controllers
             }
         }
 
+        /**
+         * Upload images
+         * Files are stored on the server as static files
+         */
         [Authorize(Roles = "User,Landlord")]
         [HttpPost]
         public async Task<IActionResult> Upload(FormFileCollection formFiles)
@@ -56,6 +64,7 @@ namespace PopUp_Now_API.Controllers
                 {
                     throw new Exception("No file uploaded");
                 }
+
                 return Ok(images);
             }
             catch (Exception e)

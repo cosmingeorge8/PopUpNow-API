@@ -19,6 +19,9 @@ namespace PopUp_Now_API.Controllers
             _categoryService = categoryService;
         }
 
+        /**
+         * Get a list of all categories
+         */
         [HttpGet]
         public async Task<IActionResult> Get()
         {

@@ -5,6 +5,9 @@ using PopUp_Now_API.Model;
 
 namespace PopUp_Now_API.Database
 {
+    /**
+     * SeedData class is user for initializing the database with default values
+     */
     public static class SeedData
     {
         public static void Seed(RoleManager<IdentityRole> roleManager, UserManager<User> userManager,
@@ -15,6 +18,9 @@ namespace PopUp_Now_API.Database
             SeedCategories(dataContext);
         }
 
+        /**
+         * Create two default users
+         */
         private static void SeedUser(UserManager<User> userManager)
         {
             if (userManager.FindByNameAsync("SuperUser").Result == null)
@@ -49,6 +55,9 @@ namespace PopUp_Now_API.Database
         }
 
 
+        /**
+         * Create Landlord and User roles
+         */
         private static void SeedRole(RoleManager<IdentityRole> roleManager)
         {
             if (!roleManager.RoleExistsAsync("User").Result)
@@ -63,6 +72,9 @@ namespace PopUp_Now_API.Database
         }
 
 
+        /**
+         * Create categories objects
+         */
         private static void SeedCategories(DataContext dataContext)
         {
             var categories = dataContext.Categories.Count();
@@ -93,8 +105,8 @@ namespace PopUp_Now_API.Database
             dataContext.SaveChangesAsync().Wait();
         }
 
-        public static readonly string CategoryShopsImgPath = "/Upload/categoryImages/shops.jpg";
-        public static readonly string CategoryMarketsImgPath = "/Upload/categoryImages/markets.jpeg";
-        public static readonly string CategoryShoppingCentersImgPath = "/Upload/categoryImages/shopping_centers.jpeg";
+        private static readonly string CategoryShopsImgPath = "/Upload/categoryImages/shops.jpg";
+        private static readonly string CategoryMarketsImgPath = "/Upload/categoryImages/markets.jpeg";
+        private static readonly string CategoryShoppingCentersImgPath = "/Upload/categoryImages/shopping_centers.jpeg";
     }
 }
