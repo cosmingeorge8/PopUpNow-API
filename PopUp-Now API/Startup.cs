@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using PopUp_Now_API.Database;
 using PopUp_Now_API.Interfaces;
 using PopUp_Now_API.Model;
@@ -79,12 +80,20 @@ namespace PopUp_Now_API
             });
 
             services.AddHealthChecks();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Pop-up Now API", Version = "v1"});
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager, DataContext dataContext)
         {
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pop-UP NOW v1"));
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
