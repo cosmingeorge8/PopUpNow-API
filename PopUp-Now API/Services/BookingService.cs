@@ -41,7 +41,7 @@ namespace PopUp_Now_API.Services
             /* Check if we can book it*/
             if (await IsBooked(property.Id, bookingRequest.StartDate, bookingRequest.EndDate))
             {
-                throw new PropertiesException($"Property is booked in: {bookingRequest.StartDate}");
+                throw new PropertiesException($"Property is booked in: {bookingRequest.StartDate.ToLocalTime()}");
             }
 
             /* If this point is reached, it means we can create a booking */
@@ -69,7 +69,9 @@ namespace PopUp_Now_API.Services
                 .Where(booking => booking.Property.Id.Equals(propertyId))
                 .Where(booking => booking.BookingStatus != BookingStatus.Declined)
                 .Where(booking =>
-                    bookingRequestStartDate >= booking.StartDate || bookingRequestEndDate <= booking.EndDate).ToListAsync();
+                    ((bookingRequestStartDate >= booking.StartDate) && (bookingRequestStartDate <= booking.EndDate))
+                    || ((bookingRequestEndDate >= booking.StartDate) && (bookingRequestEndDate <= booking.EndDate)))
+                .ToListAsync();
             return bookings.Any();
         }
 
