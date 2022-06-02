@@ -1,5 +1,7 @@
 # PopUpNow-API
 
+Back-end server intented for PopUpNow-Marketplace application.
+
 Installation guide: 
 
 
