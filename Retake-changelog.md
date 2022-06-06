@@ -15,3 +15,4 @@
 # 4. Updated Word document
   - Cleanup and restructured document
     
+# 5. Improved and added comments
