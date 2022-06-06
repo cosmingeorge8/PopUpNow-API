@@ -17,6 +17,7 @@ namespace PopUp_Now_API.Controllers
     [Route("[controller]")]
     public class PropertiesController : ControllerBase
     {
+        /* Injected dependencies */
         private readonly IPropertiesService _propertiesService;
 
         public PropertiesController(IPropertiesService propertiesService)

@@ -39,7 +39,7 @@ namespace PopUp_Now_API.Services
         /**
          * Upload an image
          */
-        public async Task<Image> Upload(IFormFile formFile, string email)
+        public async Task<Image> Upload(IFormFile formFile)
         {
             var provider = new FileExtensionContentTypeProvider();
 

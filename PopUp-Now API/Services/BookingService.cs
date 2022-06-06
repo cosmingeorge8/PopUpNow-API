@@ -26,7 +26,7 @@ namespace PopUp_Now_API.Services
         /**
          * Create a booking
          */
-        public async Task Create(Booking booking)
+        private async Task Create(Booking booking)
         {
             await _dataContext.Bookings.AddAsync(booking);
             await _dataContext.SaveChangesAsync();
@@ -88,7 +88,7 @@ namespace PopUp_Now_API.Services
         /**
          * Get a booking by id
          */
-        public async Task<Booking> Get(int bookingId)
+        private async Task<Booking> Get(int bookingId)
         {
             var result = await _dataContext.Bookings.FindAsync(bookingId);
             if (result is null)

@@ -16,6 +16,7 @@ namespace PopUp_Now_API.Controllers
     [Route("[controller]")]
     public class BookingsController : ControllerBase
     {
+        /* Injected dependencies */
         private readonly IBookingService _bookingService;
         private readonly IUsersService _userService;
 

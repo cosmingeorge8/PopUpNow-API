@@ -16,6 +16,7 @@ namespace PopUp_Now_API.Controllers
     [Route("[controller]")]
     public class FavoritesController : ControllerBase
     {
+        /* Injected dependencies */
         private readonly IFavoritesService _favoritesService;
         private readonly IUsersService _userService;
         private readonly IPropertiesService _propertiesService;

@@ -19,6 +19,7 @@ namespace PopUp_Now_API.Controllers
     [Route("[controller]")]
     public class FileUploadController : ControllerBase
     {
+        /* Injected dependencies */
         private readonly IImagesService _imagesService;
 
         public FileUploadController(IImagesService imagesService)
@@ -48,7 +49,7 @@ namespace PopUp_Now_API.Controllers
             var images = new List<Image>();
             foreach (var formFile in formFiles)
             {
-                var result = await _imagesService.Upload(formFile, User.FindFirst(ClaimTypes.Email)?.Value!);
+                var result = await _imagesService.Upload(formFile);
                 images.Add(result);
             }
 

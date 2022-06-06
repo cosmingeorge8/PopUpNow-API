@@ -12,6 +12,7 @@ namespace PopUp_Now_API.Controllers
     [Route("[controller]")]
     public class CategoriesController : ControllerBase
     {
+        /* Injected dependencies */
         private readonly ICategoryService _categoryService;
 
         public CategoriesController(ICategoryService categoryService)
