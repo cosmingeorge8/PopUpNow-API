@@ -11,4 +11,7 @@
   - Refactored Controllers: controllers do not contain a try catch block anymore
   - Refactored Services: the error handling is delegated to the services
   - Removed usage of base "Exception" class, replaced erros with either PopUpNowException for bad input and NotFoundException.
+
+# 4. Updated Word document
+  - Cleanup and restructured document
     
