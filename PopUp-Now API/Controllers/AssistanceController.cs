@@ -27,15 +27,8 @@ namespace PopUp_Now_API.Controllers
         [HttpPost]
         public async Task<IActionResult> GetAssistance(AssistanceRequest assistanceRequest)
         {
-            try
-            {
-                await _mailService.SendEmailAsync(assistanceRequest.GetEmail());
-                return Ok("Email was sent");
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            await _mailService.SendEmailAsync(assistanceRequest.GetEmail());
+            return Ok("Email was sent");
         }
     }
 }

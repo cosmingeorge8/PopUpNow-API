@@ -35,31 +35,24 @@ namespace PopUp_Now_API.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveToFavorite(FavoriteRequest favoriteRequest)
         {
-            try
+            var user = await _userService.GetUser(User.FindFirst(ClaimTypes.Email).Value);
+            var property = await _propertiesService.Get(favoriteRequest.PropertyId);
+            Favorite favorite;
+            if (favoriteRequest.IsFavorite)
             {
-                var user = await _userService.GetUser(User.FindFirst(ClaimTypes.Email).Value);
-                var property = await _propertiesService.Get(favoriteRequest.PropertyId);
-                Favorite favorite;
-                if (favoriteRequest.IsFavorite)
+                favorite = await _favoritesService.Delete(user, property);
+            }
+            else
+            {
+                favorite = new Favorite
                 {
-                    favorite = await _favoritesService.Delete(user, property);
-                }
-                else
-                {
-                    favorite = new Favorite
-                    {
-                        Property = property,
-                        User = user
-                    };
-                    await _favoritesService.Create(favorite);
-                }
+                    Property = property,
+                    User = user
+                };
+                await _favoritesService.Create(favorite);
+            }
 
-                return Ok(favorite);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(favorite);
         }
 
         /**
@@ -69,15 +62,7 @@ namespace PopUp_Now_API.Controllers
         [HttpGet("{favoriteId}")]
         public async Task<IActionResult> Get(int favoriteId)
         {
-            try
-            {
-                var favorite = await _favoritesService.Get(favoriteId);
-                return Ok(favorite);
-            }
-            catch (Exception e)
-            {
-                return NotFound(e.Message);
-            }
+            return Ok(await _favoritesService.Get(favoriteId));
         }
 
         /**
@@ -88,9 +73,7 @@ namespace PopUp_Now_API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var user = await _userService.GetUser(User.FindFirst(ClaimTypes.Email).Value);
-            var favorites = await _favoritesService.GetAll(user);
-
-            return favorites is null ? NotFound() : Ok(favorites);
+            return Ok(await _favoritesService.GetAll(user));
         }
     }
 }

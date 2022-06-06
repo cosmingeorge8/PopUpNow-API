@@ -30,9 +30,7 @@ namespace PopUp_Now_API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var properties = await _propertiesService.GetAll();
-
-            return properties.Count > 0 ? Ok(properties) : NotFound();
+            return Ok(await _propertiesService.GetAll());
         }
 
         /**
@@ -41,15 +39,7 @@ namespace PopUp_Now_API.Controllers
         [HttpGet("/id/{propertyId}")]
         public async Task<IActionResult> Get(int propertyId)
         {
-            try
-            {
-                var property = await _propertiesService.Get(propertyId);
-                return property != null ? Ok(property) : NotFound(propertyId);
-            }
-            catch (PropertiesException e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(await _propertiesService.Get(propertyId));
         }
 
         /**
@@ -58,15 +48,7 @@ namespace PopUp_Now_API.Controllers
         [HttpGet("Category/{categoryId}")]
         public async Task<IActionResult> GetByCategory(int categoryId)
         {
-            try
-            {
-                var properties = await _propertiesService.GetByCategory(categoryId);
-                return properties.Any() ? Ok(properties) : NotFound(categoryId);
-            }
-            catch (PropertiesException e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(await _propertiesService.GetByCategory(categoryId));
         }
 
 
@@ -77,15 +59,7 @@ namespace PopUp_Now_API.Controllers
         [HttpGet("{query}")]
         public async Task<IActionResult> GetSearch(string query)
         {
-            try
-            {
-                var properties = await _propertiesService.GetAll(query);
-                return properties.Any() ? Ok(properties) : NotFound(query);
-            }
-            catch (PropertiesException e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(await _propertiesService.GetAll(query));
         }
 
         /**
@@ -95,15 +69,7 @@ namespace PopUp_Now_API.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int propertyId)
         {
-            try
-            {
-                var removedProperty = await _propertiesService.Delete(propertyId);
-                return Ok(removedProperty);
-            }
-            catch (Exception e)
-            {
-                return NotFound(e.Message);
-            }
+            return Ok(await _propertiesService.Delete(propertyId));
         }
 
         /**
@@ -120,24 +86,16 @@ namespace PopUp_Now_API.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            try
-            {
-                var email = User.FindFirst(ClaimTypes.Email)?.Value!;
-                var property = await _propertiesService.Add(propertyRequest, email);
-                return Created(property.GetURl(), property);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            var email = User.FindFirst(ClaimTypes.Email)?.Value!;
+            var property = await _propertiesService.Add(propertyRequest, email);
+            return Created(property.GetURl(), property);
         }
 
         /**
          * Update a property
          */
         [Authorize(Roles = "Landlord")]
-        [HttpPatch("{propertyId:int}")]
-        public async Task<IActionResult> Update(int propertyId, [FromBody] PropertyRequest propertyRequest)
+        public async Task<IActionResult> Update([FromBody] PropertyRequest propertyRequest)
         {
             var result = await _propertiesService.Update(propertyRequest);
 
@@ -151,16 +109,8 @@ namespace PopUp_Now_API.Controllers
         [HttpGet("Landlord")]
         public async Task<IActionResult> GetByLandlord()
         {
-            try
-            {
-                var email = User.FindFirst(ClaimTypes.Email)?.Value!;
-                var result = await _propertiesService.GetByLandlord(email);
-                return result.Any() ? Ok(result) : NotFound();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            var email = User.FindFirst(ClaimTypes.Email)?.Value!;
+            return Ok(await _propertiesService.GetByLandlord(email));
         }
     }
 }
