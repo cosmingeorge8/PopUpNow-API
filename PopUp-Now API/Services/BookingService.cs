@@ -8,6 +8,7 @@ using PopUp_Now_API.Exceptions;
 using PopUp_Now_API.Interfaces;
 using PopUp_Now_API.Model;
 using PopUp_Now_API.Model.Requests;
+using SendGrid.Helpers.Errors.Model;
 
 namespace PopUp_Now_API.Services
 {
@@ -25,7 +26,7 @@ namespace PopUp_Now_API.Services
         /**
          * Create a booking
          */
-        public async Task Create(Booking booking)
+        private async Task Create(Booking booking)
         {
             await _dataContext.Bookings.AddAsync(booking);
             await _dataContext.SaveChangesAsync();
@@ -41,13 +42,13 @@ namespace PopUp_Now_API.Services
 
             if (property is null)
             {
-                throw new PropertiesException("Property not found");
+                throw new PopUpNowException("Property not found");
             }
 
             /* Check if we can book it*/
             if (await IsBooked(property.Id, bookingRequest.StartDate, bookingRequest.EndDate))
             {
-                throw new PropertiesException($"Property is booked in: {bookingRequest.StartDate.ToLocalTime()}");
+                throw new PopUpNowException($"Property is booked in: {bookingRequest.StartDate.ToLocalTime()}");
             }
 
             /* If this point is reached, it means we can create a booking */
@@ -87,12 +88,12 @@ namespace PopUp_Now_API.Services
         /**
          * Get a booking by id
          */
-        public async Task<Booking> Get(int bookingId)
+        private async Task<Booking> Get(int bookingId)
         {
             var result = await _dataContext.Bookings.FindAsync(bookingId);
             if (result is null)
             {
-                throw new Exception($"No booking found with ID = {bookingId}");
+                throw new PopUpNowException($"No booking found with ID = {bookingId}");
             }
 
             return result;
@@ -111,24 +112,38 @@ namespace PopUp_Now_API.Services
         /**
          * Get all the bookings for a give user
          */
-        public Task<List<Booking>> GetAll(User user)
+        public async Task<List<Booking>> GetAll(User user)
         {
-            return _dataContext.Bookings
+            var bookings = await _dataContext.Bookings
                 .Where(booking => booking.User.Id.Equals(user.Id))
                 .Include(booking => booking.Property)
                 .ToListAsync();
+            //Check if we have any booking in the result list
+            if (bookings.Any())
+            {
+                return bookings;
+            }
+
+            //Booking list is empty, so throw an error
+            throw new NotFoundException("No booking was found");
         }
 
         /**
          * Get all the bookings for a landlord
          */
-        public Task<List<Booking>> GetBookingRequests(User user)
+        public async Task<List<Booking>> GetBookingRequests(User user)
         {
-            return _dataContext.Bookings
+            var result = await _dataContext.Bookings
                 .Include(booking => booking.Property.User)
                 .Include(booking => booking.User)
                 .Where(booking => booking.Property.User.Id.Equals(user.Id))
                 .ToListAsync();
+            if (result.Any())
+            {
+                return result;
+            }
+
+            throw new NotFoundException("No booking requests found for user " + user.Name);
         }
     }
 }

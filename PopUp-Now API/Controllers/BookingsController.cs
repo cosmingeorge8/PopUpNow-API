@@ -16,6 +16,7 @@ namespace PopUp_Now_API.Controllers
     [Route("[controller]")]
     public class BookingsController : ControllerBase
     {
+        /* Injected dependencies */
         private readonly IBookingService _bookingService;
         private readonly IUsersService _userService;
 
@@ -33,8 +34,7 @@ namespace PopUp_Now_API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var user = await _userService.GetUser(User.FindFirst(ClaimTypes.Email).Value);
-            var bookings = await _bookingService.GetAll(user);
-            return bookings.Any() ? Ok(bookings) : NotFound();
+            return Ok(await _bookingService.GetAll(user));
         }
 
         /**
@@ -47,8 +47,7 @@ namespace PopUp_Now_API.Controllers
         public async Task<IActionResult> GetBookingRequests()
         {
             var user = await _userService.GetUser(User.FindFirst(ClaimTypes.Email).Value);
-            var bookings = await _bookingService.GetBookingRequests(user);
-            return bookings.Any() ? Ok(bookings) : NotFound();
+            return Ok(await _bookingService.GetBookingRequests(user));
         }
 
         /**
@@ -64,16 +63,9 @@ namespace PopUp_Now_API.Controllers
                 return BadRequest(ModelState.Values);
             }
 
-            try
-            {
-                var user = await _userService.GetUser(User.FindFirst(ClaimTypes.Email).Value);
-                var booking = await _bookingService.BookProperty(user, bookingRequest);
-                return Created(booking.GetURl(), booking);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            var user = await _userService.GetUser(User.FindFirst(ClaimTypes.Email).Value);
+            var booking = await _bookingService.BookProperty(user, bookingRequest);
+            return Created(booking.GetURl(), booking);
         }
 
         /**
@@ -83,16 +75,9 @@ namespace PopUp_Now_API.Controllers
         [HttpPut]
         public async Task<IActionResult> ConfirmBooking(BookingConfirmationRequest bookingConfirmationRequest)
         {
-            try
-            {
-                await _bookingService.ConfirmBooking(bookingConfirmationRequest.BookingId,
-                    bookingConfirmationRequest.BookingStatus);
-                return Ok(bookingConfirmationRequest.BookingStatus);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            await _bookingService.ConfirmBooking(bookingConfirmationRequest.BookingId,
+                bookingConfirmationRequest.BookingStatus);
+            return Ok(bookingConfirmationRequest.BookingStatus);
         }
     }
 }

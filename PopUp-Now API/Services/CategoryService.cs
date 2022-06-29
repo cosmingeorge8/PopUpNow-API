@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PopUp_Now_API.Database;
 using PopUp_Now_API.Interfaces;
 using PopUp_Now_API.Model;
+using SendGrid.Helpers.Errors.Model;
 
 namespace PopUp_Now_API.Services
 {
@@ -21,8 +22,13 @@ namespace PopUp_Now_API.Services
          */
         public async Task<List<Category>> Get()
         {
-            return await _dataContext.Categories.ToListAsync();
-        }
+            var result = await _dataContext.Categories.ToListAsync();
+            if (result is null)
+            {
+                throw new NotFoundException("No category found");
+            }
 
+            return result;
+        }
     }
 }

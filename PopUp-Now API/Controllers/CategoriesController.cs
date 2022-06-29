@@ -12,6 +12,7 @@ namespace PopUp_Now_API.Controllers
     [Route("[controller]")]
     public class CategoriesController : ControllerBase
     {
+        /* Injected dependencies */
         private readonly ICategoryService _categoryService;
 
         public CategoriesController(ICategoryService categoryService)
@@ -25,8 +26,7 @@ namespace PopUp_Now_API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var categories = await _categoryService.Get();
-            return categories.Any() ? Ok(categories) : NotFound();
+            return Ok(await _categoryService.Get());
         }
     }
 }

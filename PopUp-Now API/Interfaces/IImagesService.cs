@@ -6,7 +6,7 @@ namespace PopUp_Now_API.Interfaces
 {
     public interface IImagesService
     {
-        Task<Image> Upload(IFormFile formFile, string findFirst);
+        Task<Image> Upload(IFormFile formFile);
         Task<Image> Get(int imageId);
     }
 }

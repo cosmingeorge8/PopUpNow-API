@@ -13,7 +13,7 @@ namespace PopUp_Now_API.Database
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
-
+        /* Collections used by the database */
         public DbSet<Property> Properties { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Favorite> Favorites { get; set; }

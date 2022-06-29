@@ -16,6 +16,7 @@ namespace PopUp_Now_API.Controllers
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
+        /* Injected dependencies */
         private readonly IUsersService _userRepository;
 
         /**

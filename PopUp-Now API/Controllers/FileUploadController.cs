@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PopUp_Now_API.Exceptions;
 using PopUp_Now_API.Interfaces;
 using PopUp_Now_API.Model;
 
@@ -18,6 +19,7 @@ namespace PopUp_Now_API.Controllers
     [Route("[controller]")]
     public class FileUploadController : ControllerBase
     {
+        /* Injected dependencies */
         private readonly IImagesService _imagesService;
 
         public FileUploadController(IImagesService imagesService)
@@ -33,14 +35,7 @@ namespace PopUp_Now_API.Controllers
         [HttpGet("{imageId}")]
         public async Task<IActionResult> Get(int imageId)
         {
-            try
-            {
-                return Ok(await _imagesService.Get(imageId));
-            }
-            catch (Exception e)
-            {
-                return NotFound(e.Message);
-            }
+            return Ok(await _imagesService.Get(imageId));
         }
 
         /**
@@ -51,26 +46,19 @@ namespace PopUp_Now_API.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload(FormFileCollection formFiles)
         {
-            try
+            var images = new List<Image>();
+            foreach (var formFile in formFiles)
             {
-                var images = new List<Image>();
-                foreach (var formFile in formFiles)
-                {
-                    var result = await _imagesService.Upload(formFile, User.FindFirst(ClaimTypes.Email)?.Value!);
-                    images.Add(result);
-                }
-
-                if (images.Count == 0)
-                {
-                    throw new Exception("No file uploaded");
-                }
-
-                return Ok(images);
+                var result = await _imagesService.Upload(formFile);
+                images.Add(result);
             }
-            catch (Exception e)
+
+            if (images.Count == 0)
             {
-                return BadRequest(e.Message);
+                throw new PopUpNowException("No file uploaded");
             }
+
+            return Ok(images);
         }
     }
 }

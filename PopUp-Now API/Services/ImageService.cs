@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using PopUp_Now_API.Database;
+using PopUp_Now_API.Exceptions;
 using PopUp_Now_API.Interfaces;
 using PopUp_Now_API.Model;
 using SendGrid;
+using SendGrid.Helpers.Errors.Model;
 using static System.String;
 
 namespace PopUp_Now_API.Services
@@ -37,18 +39,18 @@ namespace PopUp_Now_API.Services
         /**
          * Upload an image
          */
-        public async Task<Image> Upload(IFormFile formFile, string email)
+        public async Task<Image> Upload(IFormFile formFile)
         {
             var provider = new FileExtensionContentTypeProvider();
-            
+
             if (!provider.TryGetContentType(formFile.FileName, out var contentType))
             {
                 contentType = formFile.ContentType;
             }
-            
+
             if (IsNullOrEmpty(formFile.FileName) || !SupportedContentTypes.Contains(contentType))
             {
-                throw new Exception("Invalid file format");
+                throw new PopUpNowException("Invalid file format");
             }
 
             var path = _environment.WebRootPath + Path.DirectorySeparatorChar + "Uploads" + Path.DirectorySeparatorChar;
@@ -78,7 +80,7 @@ namespace PopUp_Now_API.Services
             var result = await _dataContext.Images.FindAsync(imageId);
             if (result is null)
             {
-                throw new Exception("Image with id not found");
+                throw new NotFoundException($"Image with id = {imageId} not found");
             }
 
             return result;

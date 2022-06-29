@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using PopUp_Now_API.Interfaces;
 using PopUp_Now_API.Model;
 using PopUp_Now_API.Model.Requests;
+using SendGrid.Helpers.Errors.Model;
 using static System.String;
 
 namespace PopUp_Now_API.Services
@@ -44,7 +45,7 @@ namespace PopUp_Now_API.Services
             var user = await GetUser(email);
             if (user is null)
             {
-                throw new Exception("User not found");
+                throw new NotFoundException("User not found");
             }
 
             await _userManager.DeleteAsync(user);
@@ -335,7 +336,7 @@ namespace PopUp_Now_API.Services
             var result = await _userManager.FindByEmailAsync(email);
             if (result is null)
             {
-                throw new Exception("User not found");
+                throw new NotFoundException("User not found");
             }
 
             return result;

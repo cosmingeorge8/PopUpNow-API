@@ -8,6 +8,7 @@ using PopUp_Now_API.Exceptions;
 using PopUp_Now_API.Interfaces;
 using PopUp_Now_API.Model;
 using PopUp_Now_API.Model.Requests;
+using SendGrid.Helpers.Errors.Model;
 using static System.String;
 
 namespace PopUp_Now_API.Services
@@ -27,9 +28,9 @@ namespace PopUp_Now_API.Services
         /**
          * Get a list of all properties
          */
-        public Task<List<Property>> GetAll()
+        public async Task<List<Property>> GetAll()
         {
-            return _dataContext.Properties
+            var result = await _dataContext.Properties
                 .Include(property => property.location)
                 .Include(property => property.User)
                 .Include(property => property.Image)
@@ -37,6 +38,13 @@ namespace PopUp_Now_API.Services
                 .Include(property => property.Price)
                 .Include(property => property.Category)
                 .ToListAsync();
+
+            if (result.Any())
+            {
+                return result;
+            }
+
+            throw new NotFoundException("No property found");
         }
 
         public async Task<Property> Get(int id)
@@ -47,7 +55,7 @@ namespace PopUp_Now_API.Services
                 .FirstAsync();
             if (property is null)
             {
-                throw new PropertiesException($"Property with {id} not found");
+                throw new NotFoundException($"Property with {id} not found");
             }
 
             return property;
@@ -61,12 +69,12 @@ namespace PopUp_Now_API.Services
             var property = await Get(id);
             if (property is null)
             {
-                throw new Exception("Property not found ");
+                throw new NotFoundException($"Property with id = {id} not found ");
             }
 
             return _dataContext.Properties.Remove(property).Entity;
         }
-        
+
         /**
          * Add a new property
          */
@@ -104,12 +112,7 @@ namespace PopUp_Now_API.Services
 
             var result = _dataContext.Properties.Update(property);
 
-            if (result is null)
-            {
-                return false;
-            }
-
-            return true;
+            return result is not null;
         }
 
         /**
@@ -121,10 +124,10 @@ namespace PopUp_Now_API.Services
 
             if (category is null)
             {
-                throw new PropertiesException("No category with the given id was found");
+                throw new PopUpNowException($"No category with id={categoryId} was found");
             }
 
-            return await _dataContext.Properties
+            var result = await _dataContext.Properties
                 .Where(property =>
                     property.Category.Id == categoryId)
                 .Include(property => property.location)
@@ -134,12 +137,19 @@ namespace PopUp_Now_API.Services
                 .Include(property => property.Price)
                 .Include(property => property.Category)
                 .ToListAsync();
+
+            if (result.Any())
+            {
+                return result;
+            }
+
+            throw new NotFoundException($"No properties found in category = {category.Name}");
         }
 
         public async Task<List<Property>> GetByLandlord(string email)
         {
             var user = await _usersService.GetUser(email);
-            return await _dataContext.Properties
+            var result = await _dataContext.Properties
                 .Where(property => property.User.Id.Equals(user.Id))
                 .Include(property => property.location)
                 .Include(property => property.User)
@@ -148,6 +158,12 @@ namespace PopUp_Now_API.Services
                 .Include(property => property.Price)
                 .Include(property => property.Category)
                 .ToListAsync();
+            if (result.Any())
+            {
+                return result;
+            }
+
+            throw new NotFoundException($"No properties found for landlord {user.Name}");
         }
 
 
@@ -160,7 +176,7 @@ namespace PopUp_Now_API.Services
         {
             if (IsNullOrEmpty(query))
             {
-                throw new PropertiesException("Search query was empty");
+                throw new PopUpNowException("Search query was empty");
             }
 
             var lowerQuery = query.ToLower();

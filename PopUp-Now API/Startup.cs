@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PopUp_Now_API.Database;
+using PopUp_Now_API.Exceptions;
 using PopUp_Now_API.Interfaces;
 using PopUp_Now_API.Model;
 using PopUp_Now_API.Services;
@@ -109,6 +110,8 @@ namespace PopUp_Now_API
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseMiddleware<ErrorHandler>();
+            
             SeedData.Seed(roleManager, userManager, dataContext);
 
             app.UseEndpoints(endpoints =>
