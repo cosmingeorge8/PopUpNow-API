@@ -3,7 +3,7 @@
 set -e
 run_cmd="dotnet run ASPNETCORE_URLS=http://*:7557 ASPNETCORE_ENVIRONMENT=Development"
 
-dotnet tool install --global dotnet-ef
+dotnet tool install --global dotnet-ef --version 5
 
 echo "EF installed"
 
